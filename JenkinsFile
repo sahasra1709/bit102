@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn clean compile'
+                bat 'mvn compile'
             }
         }
 
@@ -25,14 +25,20 @@ pipeline {
                 bat 'mvn package'
             }
         }
+
+        stage('Run') {
+            steps {
+                bat 'mvn exec:java -Dexec.mainClass="com.example.Main"'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Build Successful '
+            echo 'Build Successful'
         }
         failure {
-            echo 'Build Failed '
+            echo 'Build Failed'
         }
     }
 }
