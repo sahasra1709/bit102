@@ -1,16 +1,20 @@
 pipeline {
-    agent any
+    agent any  // Use any available agent
 
     tools {
-        jdk 'JDK'
-        maven 'Maven'
+        maven 'Maven'  // Must match Jenkins config
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/sahasra1709/bit102.git'
+            }
+        }
 
         stage('Build') {
             steps {
-                bat 'mvn compile'
+                bat 'mvn clean package'
             }
         }
 
@@ -20,25 +24,19 @@ pipeline {
             }
         }
 
-        stage('Package') {
+        stage('Run Application') {
             steps {
-                bat 'mvn package'
-            }
-        }
-
-        stage('Run') {
-            steps {
-                bat 'mvn exec:java -Dexec.mainClass="com.example.Main"'
+                bat 'java -jar target\\bitmaven-1.0-SNAPSHOT.jar'
             }
         }
     }
 
     post {
         success {
-            echo 'Build Successful'
+            echo 'Build and run successful!'
         }
         failure {
-            echo 'Build Failed'
+            echo 'Build failed!'
         }
     }
 }
